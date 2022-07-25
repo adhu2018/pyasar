@@ -3,6 +3,7 @@ import json
 import shutil
 import os.path
 import logging
+import re
 
 LOGGER = logging.getLogger(__name__)
 
@@ -216,5 +217,5 @@ class AsarArchive:
         asarfile.seek(asarfile.tell() + 8)
         header = asarfile.read(header_size).decode('utf-8')
 
-        files = json.loads(header)
+        files = json.loads(re.sub('},', '},\n', header.strip('\u0000')))
         return cls(filename, asarfile, files, asarfile.tell())
